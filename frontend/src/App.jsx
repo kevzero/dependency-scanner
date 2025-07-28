@@ -50,7 +50,7 @@ function App() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'dependency_report.pdf';
+      a.download = 'analysis_report.pdf'; // Browser chiederà dove salvare
       a.click();
     } catch (err) {
       setStatusMsg('❌ Error generating PDF.');
@@ -77,16 +77,13 @@ function App() {
         <>
           <h3>File: {results.analyzed_file}</h3>
           <p>Language: {results.language} | Date: {results.date}</p>
-          {results.packages.length > 0 ? (
-            <>
-              <ResultsTable data={results.packages} />
-              <button className="primary" style={{ background: '#636e72' }} onClick={downloadPDF}>
-                Download Report PDF
-              </button>
-            </>
-          ) : (
-            <p>No packages found in the file.</p>
-          )}
+          <p>Total Lines: {results.total_lines} | Comments: {results.comments}</p>
+          <p>Functions: {results.functions.join(', ') || 'None'} | Classes: {results.classes.join(', ') || 'None'}</p>
+          <p>Imports: {results.imports.join(', ') || 'None'}</p>
+
+          <button className="primary" style={{ background: '#636e72', marginTop: '20px' }} onClick={downloadPDF}>
+            Download Detailed PDF Report
+          </button>
         </>
       )}
     </div>
