@@ -1,29 +1,31 @@
-import subprocess
-import tempfile
 import json
+from datetime import datetime
 
 async def scan_python(file):
     content = await file.read()
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as tmp:
-        tmp.write(content)
-        tmp.flush()
-        result = subprocess.run(["pip-audit", "-r", tmp.name, "--format", "json"], capture_output=True, text=True)
-    try:
-        data = json.loads(result.stdout)
-    except json.JSONDecodeError:
-        return {"error": "Invalid output"}
-    return {"vulnerabilities": data}
+    lines = content.decode().splitlines()
+    packages = []
+    for line in lines:
+        if "==" in line:
+            name, version = line.split("==")
+            packages.append({"name": name.strip(), "version": version.strip()})
+    return {
+        "language": "Python",
+        "analyzed_file": file.filename,
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "packages": packages
+    }
 
 async def scan_node(file):
     content = await file.read()
-    with tempfile.TemporaryDirectory() as tmpdir:
-        package_path = f"{tmpdir}/package.json"
-        with open(package_path, "wb") as f:
-            f.write(content)
-        subprocess.run(["npm", "install", "--package-lock-only"], cwd=tmpdir)
-        result = subprocess.run(["npm", "audit", "--json"], cwd=tmpdir, capture_output=True, text=True)
-    try:
-        data = json.loads(result.stdout)
-    except json.JSONDecodeError:
-        return {"error": "Invalid output"}
-    return {"vulnerabilities": data}
+    data = json.loads(content.decode())
+    packages = []
+    if "dependencies" in data:
+        for name, version in data["dependencies"].items():
+            packages.append({"name": name, "version": version})
+    return {
+        "language": "Node.js",
+        "analyzed_file": file.filename,
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "packages": packages
+    }

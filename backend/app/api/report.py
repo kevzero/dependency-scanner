@@ -1,7 +1,7 @@
-from reportlab.lib.pagesizes import A4
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4 # type: ignore
+from reportlab.lib import colors # type: ignore
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer # type: ignore
+from reportlab.lib.styles import getSampleStyleSheet # type: ignore
 import tempfile
 
 def generate_pdf(data):
@@ -9,20 +9,28 @@ def generate_pdf(data):
     doc = SimpleDocTemplate(pdf_path, pagesize=A4)
     elements = []
     styles = getSampleStyleSheet()
-    title = Paragraph("Dependency Security Report", styles["Title"])
+
+    # Title
+    title = Paragraph("Dependency Analysis Report", styles["Title"])
     elements.append(title)
+    elements.append(Spacer(1, 20))
 
-    table_data = [["Package", "Version", "CVE", "Severity", "Fix"]]
-    for vuln in data.get("vulnerabilities", []):
-        table_data.append([
-            vuln.get("name", "-"),
-            vuln.get("version", "-"),
-            vuln.get("id", "-"),
-            vuln.get("severity", "-"),
-            ", ".join(vuln.get("fix_versions", []))
-        ])
+    # Info
+    info = f"""
+    File analyzed: {data.get('analyzed_file', 'N/A')}<br/>
+    Language: {data.get('language', 'N/A')}<br/>
+    Date: {data.get('date', '')}<br/>
+    Note: This report lists packages found in the file. No CVE check performed.
+    """
+    elements.append(Paragraph(info, styles["Normal"]))
+    elements.append(Spacer(1, 20))
 
-    table = Table(table_data, colWidths=[100, 60, 80, 60, 100])
+    # Table
+    table_data = [["Package", "Version"]]
+    for pkg in data.get("packages", []):
+        table_data.append([pkg["name"], pkg["version"]])
+
+    table = Table(table_data, colWidths=[200, 100])
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
@@ -30,5 +38,6 @@ def generate_pdf(data):
         ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
     ]))
     elements.append(table)
+
     doc.build(elements)
     return pdf_path

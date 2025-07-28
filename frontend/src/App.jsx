@@ -5,19 +5,19 @@ import './styles.css';
 
 function App() {
   const [file, setFile] = useState(null);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
   const [language, setLanguage] = useState('python');
 
   const handleScan = async () => {
     if (!file) {
-      alert("⚠ Seleziona un file prima di avviare la scansione!");
+      alert("⚠ Please select a file before scanning!");
       return;
     }
     setStatusMsg('');
     setLoading(true);
-    setResults([]);
+    setResults(null);
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -28,53 +28,57 @@ function App() {
       });
       const data = await res.json();
 
-      if (data.vulnerabilities && data.vulnerabilities.length > 0) {
-        setResults(data.vulnerabilities);
-        setStatusMsg('✅ Analisi completata: vulnerabilità trovate.');
+      if (data.packages && data.packages.length > 0) {
+        setResults(data);
+        setStatusMsg('✅ Scan completed successfully.');
       } else {
-        setResults([]);
-        setStatusMsg('✅ Nessuna vulnerabilità trovata.');
+        setResults(data);
+        setStatusMsg('✅ Scan completed, no packages found.');
       }
     } catch (err) {
-      setStatusMsg('❌ Errore durante la scansione.');
+      setStatusMsg('❌ Error during scanning.');
     }
     setLoading(false);
   };
 
   const downloadPDF = async () => {
+    if (!results) {
+      alert("⚠ Please scan a file first!");
+      return;
+    }
     try {
       const res = await fetch('http://localhost:8000/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vulnerabilities: results }),
+        body: JSON.stringify(results),
       });
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'security_report.pdf';
+      a.download = 'dependency_report.pdf';
       a.click();
-      setStatusMsg('✅ PDF pronto per il download (scegli dove salvare).');
+      setStatusMsg('✅ PDF ready for download.');
     } catch (err) {
-      setStatusMsg('❌ Errore durante la generazione del PDF.');
+      setStatusMsg('❌ Error generating PDF.');
     }
   };
 
   return (
     <div className="container">
-      <h1>Dependency Scanner PRO</h1>
-      <p className="subtitle">Carica un file, seleziona il linguaggio e avvia la scansione.</p>
+      <h1>Dependency Analyzer</h1>
+      <p className="subtitle">Upload a file, select the language, and start scanning.</p>
 
-      {/* Switch linguaggio */}
+      {/* Language Switch */}
       <div className="button-group">
         <button className={language === 'python' ? 'active' : ''} onClick={() => setLanguage('python')}>Python</button>
         <button className={language === 'node' ? 'active' : ''} onClick={() => setLanguage('node')}>Node.js</button>
       </div>
 
-      {/* Upload file */}
+      {/* File Upload */}
       <Upload onFileSelect={setFile} />
 
-      {/* Bottone Scan */}
+      {/* Scan Button */}
       <button className="primary" onClick={handleScan}>Scan Dependencies</button>
 
       {/* Loader */}
@@ -84,26 +88,26 @@ function App() {
         </div>
       )}
 
-      {/* Stato */}
+      {/* Status Message */}
       {statusMsg && <p style={{ textAlign: 'center', marginTop: '15px', color: '#2d3436' }}>{statusMsg}</p>}
 
-      {/* Risultati */}
-      {!loading && results.length > 0 && (
+      {/* Scan Results */}
+      {!loading && results && (
         <>
-          <ResultsTable data={results} />
-          <button className="primary" style={{ background: '#636e72' }} onClick={downloadPDF}>
-            Scarica Report PDF
-          </button>
+          <h3 style={{ textAlign: 'center', marginTop: '20px' }}>
+            File: {results.analyzed_file} | Language: {results.language} | Date: {results.date}
+          </h3>
+          {results.packages && results.packages.length > 0 ? (
+            <>
+              <ResultsTable data={results.packages} />
+              <button className="primary" style={{ background: '#636e72' }} onClick={downloadPDF}>
+                Download Report PDF
+              </button>
+            </>
+          ) : (
+            <p style={{ textAlign: 'center', marginTop: '20px' }}>No packages found in the file.</p>
+          )}
         </>
-      )}
-
-      {/* Nessuna vulnerabilità */}
-      {!loading && results.length === 0 && statusMsg.includes('Nessuna') && (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <button className="primary" style={{ background: '#636e72' }} onClick={downloadPDF}>
-            Scarica Report PDF
-          </button>
-        </div>
       )}
     </div>
   );

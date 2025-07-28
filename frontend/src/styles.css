@@ -1,12 +1,7 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: #f1f2f6;
+  background: #f4f7fa;
+  color: #333;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -15,24 +10,23 @@ body {
 }
 
 .container {
-  width: 100%;
-  max-width: 900px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  max-width: 900px;
+  width: 100%;
   padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
-  color: #2d3436;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .subtitle {
   text-align: center;
   color: #636e72;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .button-group {
@@ -58,16 +52,12 @@ button.active {
   color: #fff;
 }
 
-button:hover {
-  background: #74b9ff;
-  color: #fff;
-}
-
 button.primary {
-  background: #00b894;
-  color: #fff;
+  display: block;
   width: 100%;
   margin-top: 15px;
+  background: #00b894;
+  color: #fff;
 }
 
 button.primary:hover {
@@ -81,16 +71,9 @@ input[type="file"] {
   border: 2px dashed #ccc;
   border-radius: 8px;
   width: 90%;
-  text-align: center;
-  cursor: pointer;
   background: #fafafa;
 }
 
-input[type="file"]:hover {
-  border-color: #0984e3;
-}
-
-/* Loader */
 .loader {
   display: flex;
   justify-content: center;
@@ -110,30 +93,3 @@ input[type="file"]:hover {
 @keyframes bounce {
   to { transform: translateY(-10px); }
 }
-
-/* Tabella */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 25px;
-}
-
-th, td {
-  padding: 12px;
-  text-align: center;
-  font-size: 14px;
-}
-
-th {
-  background: #0984e3;
-  color: #fff;
-}
-
-tr:nth-child(even) {
-  background: #f9f9f9;
-}
-
-.severity-critical { background: #d63031; color: #fff; }
-.severity-high { background: #e17055; color: #fff; }
-.severity-medium { background: #fdcb6e; color: #333; }
-.severity-low { background: #00b894; color: #fff; }
