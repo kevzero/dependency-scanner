@@ -15,7 +15,6 @@ function App() {
       return;
     }
 
-    // Reset state for new scan
     setStatusMsg('');
     setLoading(true);
     setResults(null);
@@ -75,6 +74,10 @@ function App() {
     setResults(null);
     setStatusMsg('');
     setLanguage('python');
+
+    // Reset anche input file nell'Upload component
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) fileInput.value = '';
   };
 
   return (
@@ -92,8 +95,12 @@ function App() {
       <Upload onFileSelect={setFile} />
 
       {/* Buttons */}
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '15px' }}>
+      <div style={{ textAlign: 'center', marginTop: '15px' }}>
         <button className="primary" onClick={handleScan}>Scan File</button>
+      </div>
+
+      {/* Reset Button sotto Scan */}
+      <div style={{ textAlign: 'center', marginTop: '10px' }}>
         <button className="secondary" style={{ background: '#d63031', color: '#fff' }} onClick={resetAll}>Reset</button>
       </div>
 
