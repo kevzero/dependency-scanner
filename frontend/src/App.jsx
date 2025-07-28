@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Upload from './components/Upload';
-import ResultsTable from './components/ResultsTable';
 import './styles.css';
 
 function App() {
@@ -27,6 +26,13 @@ function App() {
         body: formData,
       });
       const data = await res.json();
+
+      if (data.error) {
+        setStatusMsg(`❌ ${data.error}`);
+        setLoading(false);
+        return;
+      }
+
       setResults(data);
       setStatusMsg('✅ Scan completed.');
     } catch (err) {
@@ -50,7 +56,7 @@ function App() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'analysis_report.pdf'; // Browser chiederà dove salvare
+      a.download = 'analysis_report.pdf';
       a.click();
     } catch (err) {
       setStatusMsg('❌ Error generating PDF.');
@@ -71,15 +77,17 @@ function App() {
       <button className="primary" onClick={handleScan}>Scan File</button>
 
       {loading && <p>Scanning...</p>}
-      {statusMsg && <p style={{ textAlign: 'center' }}>{statusMsg}</p>}
+      {statusMsg && <p style={{ textAlign: 'center', marginTop: '15px' }}>{statusMsg}</p>}
 
       {!loading && results && (
         <>
           <h3>File: {results.analyzed_file}</h3>
-          <p>Language: {results.language} | Date: {results.date}</p>
-          <p>Total Lines: {results.total_lines} | Comments: {results.comments}</p>
-          <p>Functions: {results.functions.join(', ') || 'None'} | Classes: {results.classes.join(', ') || 'None'}</p>
-          <p>Imports: {results.imports.join(', ') || 'None'}</p>
+          <p><strong>Language:</strong> {results.language} | <strong>Date:</strong> {results.date}</p>
+          <p><strong>Total Lines:</strong> {results.total_lines} | <strong>Comments:</strong> {results.comments}</p>
+          <p><strong>Functions:</strong> {results.functions.length > 0 ? results.functions.join(', ') : 'None'}</p>
+          <p><strong>Classes:</strong> {results.classes.length > 0 ? results.classes.join(', ') : 'None'}</p>
+          <p><strong>Imports:</strong> {results.imports.length > 0 ? results.imports.join(', ') : 'None'}</p>
+          <p><strong>Data Types:</strong> {results.data_types.length > 0 ? results.data_types.join(', ') : 'None'}</p>
 
           <button className="primary" style={{ background: '#636e72', marginTop: '20px' }} onClick={downloadPDF}>
             Download Detailed PDF Report
