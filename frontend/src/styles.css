@@ -1,95 +1,51 @@
-body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: #f4f7fa;
-  color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding: 40px;
-}
-
-.container {
-  background: #fff;
-  max-width: 900px;
-  width: 100%;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  text-align: center;
-  color: #636e72;
-  margin-bottom: 20px;
-}
-
-.button-group {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-button {
+.primary, .secondary, .switch-btn {
   padding: 12px 20px;
-  font-size: 15px;
-  border-radius: 8px;
   border: none;
   cursor: pointer;
-  background: #dfe6e9;
-  color: #2d3436;
-  transition: 0.3s;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-button.active {
+.primary {
   background: #0984e3;
-  color: #fff;
+  color: white;
+  width: 200px;
 }
 
-button.primary {
-  display: block;
-  width: 100%;
-  margin-top: 15px;
-  background: #00b894;
-  color: #fff;
+.primary:hover {
+  background: #74b9ff;
+  transform: scale(1.05);
 }
 
-button.primary:hover {
-  background: #019874;
+.secondary {
+  background: #d63031;
+  color: white;
+  width: 200px;
 }
 
-input[type="file"] {
-  display: block;
-  margin: 20px auto;
-  padding: 12px;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  width: 90%;
-  background: #fafafa;
+.secondary:hover {
+  background: #ff7675;
+  transform: scale(1.05);
 }
 
-.loader {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+.switch-btn {
+  margin: 5px;
+  background: #b2bec3;
+  color: black;
+  padding: 10px 15px;
 }
-.loader div {
-  width: 12px;
-  height: 12px;
-  background: #0984e3;
-  margin: 0 4px;
-  border-radius: 50%;
-  animation: bounce 0.6s infinite alternate;
-}
-.loader div:nth-child(2) { animation-delay: 0.2s; }
-.loader div:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes bounce {
-  to { transform: translateY(-10px); }
+.switch-btn.active {
+  background: #636e72;
+  color: white;
+}
+
+.switch-btn:hover {
+  background: #81ecec;
+}
+
+.full-width {
+  display: inline-block;
+  width: 200px;
 }

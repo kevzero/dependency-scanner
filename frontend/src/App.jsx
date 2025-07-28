@@ -11,7 +11,7 @@ function App() {
 
   const handleScan = async () => {
     if (!file) {
-      alert("Please select a file before scanning!");
+      alert("⚠ Please select a file before scanning!");
       return;
     }
 
@@ -75,7 +75,7 @@ function App() {
     setStatusMsg('');
     setLanguage('python');
 
-    // Reset anche input file nell'Upload component
+    // Reset input file
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput) fileInput.value = '';
   };
@@ -87,21 +87,21 @@ function App() {
 
       {/* Language Switch */}
       <div className="button-group">
-        <button className={language === 'python' ? 'active' : ''} onClick={() => setLanguage('python')}>Python</button>
-        <button className={language === 'node' ? 'active' : ''} onClick={() => setLanguage('node')}>Node.js</button>
+        <button className={`switch-btn ${language === 'python' ? 'active' : ''}`} onClick={() => setLanguage('python')}>Python</button>
+        <button className={`switch-btn ${language === 'node' ? 'active' : ''}`} onClick={() => setLanguage('node')}>Node.js</button>
       </div>
 
       {/* File Upload */}
       <Upload onFileSelect={setFile} />
 
-      {/* Buttons */}
+      {/* Scan Button */}
       <div style={{ textAlign: 'center', marginTop: '15px' }}>
         <button className="primary" onClick={handleScan}>Scan File</button>
       </div>
 
-      {/* Reset Button sotto Scan */}
+      {/* Reset Button */}
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-        <button className="secondary" style={{ background: '#d63031', color: '#fff' }} onClick={resetAll}>Reset</button>
+        <button className="secondary full-width" onClick={resetAll}>Reset</button>
       </div>
 
       {/* Loading & Status */}
