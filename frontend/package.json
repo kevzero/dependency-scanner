@@ -1,5 +1,5 @@
 {
-  "name": "dependency-scanner-ui",
+  "name": "dependency-analyzer",
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
@@ -15,3 +15,4 @@
     "@vitejs/plugin-react": "^4.0.0"
   }
 }
+
