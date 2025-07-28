@@ -9,37 +9,51 @@ function App() {
   const [statusMsg, setStatusMsg] = useState('');
   const [language, setLanguage] = useState('python');
 
-  const handleScan = async () => {
-    if (!file) {
-      alert("Please select a file before scanning!");
+const handleScan = async () => {
+  if (!file) {
+    alert("Please select a file before scanning!");
+    return;
+  }
+
+  // Reset UI state
+  setStatusMsg('');
+  setLoading(true);
+  setResults(null);
+
+  try {
+    // Prepara i dati da inviare
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Endpoint in base al linguaggio selezionato
+    const endpoint = language === 'python' ? '/scan/python' : '/scan/node';
+
+    // Richiesta al backend
+    const res = await fetch(`http://localhost:8000${endpoint}`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    // ✅ Gestione errore dal backend (es. file sbagliato o vuoto)
+    if (data.error) {
+      setStatusMsg(`❌ ${data.error}`);
+      setResults(null); // Non mostra nulla
+      setLoading(false);
       return;
     }
-    setStatusMsg('');
-    setLoading(true);
-    setResults(null);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const endpoint = language === 'python' ? '/scan/python' : '/scan/node';
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
 
-      if (data.error) {
-        setStatusMsg(`❌ ${data.error}`);
-        setLoading(false);
-        return;
-      }
+    // ✅ Se tutto ok, mostra i risultati
+    setResults(data);
+    setStatusMsg('✅ Scan completed.');
+  } catch (err) {
+    // Errore di rete o server
+    setStatusMsg('❌ Error during scanning.');
+  }
 
-      setResults(data);
-      setStatusMsg('✅ Scan completed.');
-    } catch (err) {
-      setStatusMsg('❌ Error during scanning.');
-    }
-    setLoading(false);
-  };
+  setLoading(false);
+};
 
   const downloadPDF = async () => {
     if (!results) {

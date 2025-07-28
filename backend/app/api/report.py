@@ -5,8 +5,6 @@ from reportlab.lib.styles import getSampleStyleSheet # type: ignore
 import tempfile
 
 
-
-
 def generate_pdf(data):
     pdf_path = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf").name
     doc = SimpleDocTemplate(pdf_path, pagesize=A4)
@@ -17,7 +15,6 @@ def generate_pdf(data):
     elements.append(title)
     elements.append(Spacer(1, 20))
 
-    # Info block
     info = f"""
     <b>File:</b> {data.get('analyzed_file')}<br/>
     <b>Language:</b> {data.get('language')}<br/>
@@ -27,9 +24,9 @@ def generate_pdf(data):
     <b>Functions:</b> {', '.join(data.get('functions', [])) or 'None'}<br/>
     <b>Classes:</b> {', '.join(data.get('classes', [])) or 'None'}<br/>
     <b>Imports:</b> {', '.join(data.get('imports', [])) or 'None'}<br/>
-    <b>Data Types:</b> {', '.join(data.get('data_types', [])) or 'None'}
+    <b>Data Types:</b> {', '.join(data.get('data_types', [])) or 'None'}<br/>
+    <b>Keyword Count:</b> {data.get('keyword_count')}
     """
     elements.append(Paragraph(info, styles["Normal"]))
-
     doc.build(elements)
     return pdf_path
