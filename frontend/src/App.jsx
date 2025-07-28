@@ -12,7 +12,7 @@ function App() {
 
   const handleScan = async () => {
     if (!file) {
-      alert("⚠ Please select a file before scanning!");
+      alert("Please select a file before scanning!");
       return;
     }
     setStatusMsg('');
@@ -27,14 +27,8 @@ function App() {
         body: formData,
       });
       const data = await res.json();
-
-      if (data.packages && data.packages.length > 0) {
-        setResults(data);
-        setStatusMsg('✅ Scan completed successfully.');
-      } else {
-        setResults(data);
-        setStatusMsg('✅ Scan completed, no packages found.');
-      }
+      setResults(data);
+      setStatusMsg('✅ Scan completed.');
     } catch (err) {
       setStatusMsg('❌ Error during scanning.');
     }
@@ -43,7 +37,7 @@ function App() {
 
   const downloadPDF = async () => {
     if (!results) {
-      alert("⚠ Please scan a file first!");
+      alert("Please scan a file first!");
       return;
     }
     try {
@@ -58,7 +52,6 @@ function App() {
       a.href = url;
       a.download = 'dependency_report.pdf';
       a.click();
-      setStatusMsg('✅ PDF ready for download.');
     } catch (err) {
       setStatusMsg('❌ Error generating PDF.');
     }
@@ -67,37 +60,24 @@ function App() {
   return (
     <div className="container">
       <h1>Dependency Analyzer</h1>
-      <p className="subtitle">Upload a file, select the language, and start scanning.</p>
+      <p className="subtitle">Upload a file, choose the language, and scan its content.</p>
 
-      {/* Language Switch */}
       <div className="button-group">
         <button className={language === 'python' ? 'active' : ''} onClick={() => setLanguage('python')}>Python</button>
         <button className={language === 'node' ? 'active' : ''} onClick={() => setLanguage('node')}>Node.js</button>
       </div>
 
-      {/* File Upload */}
       <Upload onFileSelect={setFile} />
+      <button className="primary" onClick={handleScan}>Scan File</button>
 
-      {/* Scan Button */}
-      <button className="primary" onClick={handleScan}>Scan Dependencies</button>
+      {loading && <p>Scanning...</p>}
+      {statusMsg && <p style={{ textAlign: 'center' }}>{statusMsg}</p>}
 
-      {/* Loader */}
-      {loading && (
-        <div className="loader">
-          <div></div><div></div><div></div>
-        </div>
-      )}
-
-      {/* Status Message */}
-      {statusMsg && <p style={{ textAlign: 'center', marginTop: '15px', color: '#2d3436' }}>{statusMsg}</p>}
-
-      {/* Scan Results */}
       {!loading && results && (
         <>
-          <h3 style={{ textAlign: 'center', marginTop: '20px' }}>
-            File: {results.analyzed_file} | Language: {results.language} | Date: {results.date}
-          </h3>
-          {results.packages && results.packages.length > 0 ? (
+          <h3>File: {results.analyzed_file}</h3>
+          <p>Language: {results.language} | Date: {results.date}</p>
+          {results.packages.length > 0 ? (
             <>
               <ResultsTable data={results.packages} />
               <button className="primary" style={{ background: '#636e72' }} onClick={downloadPDF}>
@@ -105,7 +85,7 @@ function App() {
               </button>
             </>
           ) : (
-            <p style={{ textAlign: 'center', marginTop: '20px' }}>No packages found in the file.</p>
+            <p>No packages found in the file.</p>
           )}
         </>
       )}

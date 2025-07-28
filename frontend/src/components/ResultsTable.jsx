@@ -1,20 +1,24 @@
+import React from 'react';
+
 function ResultsTable({ data }) {
   return (
     <table>
       <thead>
         <tr>
-          <th>Pacchetto</th>
-          <th>Versione</th>
+          <th>Package</th>
+          <th>Version</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((item, idx) => (
+        {data.map((pkg, idx) => (
           <tr key={idx}>
-            <td>{item.name}</td>
-            <td>{item.version}</td>
+            <td>{pkg.name}</td>
+            <td>{pkg.version}</td>
           </tr>
         ))}
       </tbody>
     </table>
   );
 }
+
+export default ResultsTable;
