@@ -9,51 +9,44 @@ function App() {
   const [statusMsg, setStatusMsg] = useState('');
   const [language, setLanguage] = useState('python');
 
-const handleScan = async () => {
-  if (!file) {
-    alert("Please select a file before scanning!");
-    return;
-  }
-
-  // Reset UI state
-  setStatusMsg('');
-  setLoading(true);
-  setResults(null);
-
-  try {
-    // Prepara i dati da inviare
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Endpoint in base al linguaggio selezionato
-    const endpoint = language === 'python' ? '/scan/python' : '/scan/node';
-
-    // Richiesta al backend
-    const res = await fetch(`http://localhost:8000${endpoint}`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await res.json();
-
-    // ✅ Gestione errore dal backend (es. file sbagliato o vuoto)
-    if (data.error) {
-      setStatusMsg(`❌ ${data.error}`);
-      setResults(null); // Non mostra nulla
-      setLoading(false);
+  const handleScan = async () => {
+    if (!file) {
+      alert("Please select a file before scanning!");
       return;
     }
 
-    // ✅ Se tutto ok, mostra i risultati
-    setResults(data);
-    setStatusMsg('✅ Scan completed.');
-  } catch (err) {
-    // Errore di rete o server
-    setStatusMsg('❌ Error during scanning.');
-  }
+    // Reset state for new scan
+    setStatusMsg('');
+    setLoading(true);
+    setResults(null);
 
-  setLoading(false);
-};
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const endpoint = language === 'python' ? '/scan/python' : '/scan/node';
+
+      const res = await fetch(`http://localhost:8000${endpoint}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        setStatusMsg(`❌ ${data.error}`);
+        setResults(null);
+        setLoading(false);
+        return;
+      }
+
+      setResults(data);
+      setStatusMsg('✅ Scan completed.');
+    } catch (err) {
+      setStatusMsg('❌ Error during scanning.');
+    }
+
+    setLoading(false);
+  };
 
   const downloadPDF = async () => {
     if (!results) {
@@ -77,22 +70,38 @@ const handleScan = async () => {
     }
   };
 
+  const resetAll = () => {
+    setFile(null);
+    setResults(null);
+    setStatusMsg('');
+    setLanguage('python');
+  };
+
   return (
     <div className="container">
       <h1>Dependency Analyzer</h1>
       <p className="subtitle">Upload a file, choose the language, and scan its content.</p>
 
+      {/* Language Switch */}
       <div className="button-group">
         <button className={language === 'python' ? 'active' : ''} onClick={() => setLanguage('python')}>Python</button>
         <button className={language === 'node' ? 'active' : ''} onClick={() => setLanguage('node')}>Node.js</button>
       </div>
 
+      {/* File Upload */}
       <Upload onFileSelect={setFile} />
-      <button className="primary" onClick={handleScan}>Scan File</button>
 
-      {loading && <p>Scanning...</p>}
+      {/* Buttons */}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '15px' }}>
+        <button className="primary" onClick={handleScan}>Scan File</button>
+        <button className="secondary" style={{ background: '#d63031', color: '#fff' }} onClick={resetAll}>Reset</button>
+      </div>
+
+      {/* Loading & Status */}
+      {loading && <p style={{ textAlign: 'center', marginTop: '15px' }}>Scanning...</p>}
       {statusMsg && <p style={{ textAlign: 'center', marginTop: '15px' }}>{statusMsg}</p>}
 
+      {/* Results */}
       {!loading && results && (
         <>
           <h3>File: {results.analyzed_file}</h3>
@@ -102,7 +111,9 @@ const handleScan = async () => {
           <p><strong>Classes:</strong> {results.classes.length > 0 ? results.classes.join(', ') : 'None'}</p>
           <p><strong>Imports:</strong> {results.imports.length > 0 ? results.imports.join(', ') : 'None'}</p>
           <p><strong>Data Types:</strong> {results.data_types.length > 0 ? results.data_types.join(', ') : 'None'}</p>
+          <p><strong>Keyword Count:</strong> {results.keyword_count}</p>
 
+          {/* PDF Download */}
           <button className="primary" style={{ background: '#636e72', marginTop: '20px' }} onClick={downloadPDF}>
             Download Detailed PDF Report
           </button>
