@@ -1,51 +1,120 @@
+/* Reset */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  color: #2d3436;
+}
+
+/* Container principale */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Titolo */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #2d3436;
+}
+
+/* Sottotitolo */
+.subtitle {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  color: #636e72;
+}
+
+/* Gruppo pulsanti linguaggio */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Pulsanti generali */
 .primary, .secondary, .switch-btn {
   padding: 12px 20px;
   border: none;
   cursor: pointer;
   font-size: 16px;
   border-radius: 6px;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
+/* Pulsante principale */
 .primary {
   background: #0984e3;
   color: white;
-  width: 200px;
+  width: 220px;
+  margin-bottom: 10px;
 }
-
 .primary:hover {
   background: #74b9ff;
   transform: scale(1.05);
 }
 
+/* Pulsante reset */
 .secondary {
   background: #d63031;
   color: white;
-  width: 200px;
+  width: 220px;
 }
-
 .secondary:hover {
   background: #ff7675;
   transform: scale(1.05);
 }
 
+/* Pulsanti linguaggio */
 .switch-btn {
-  margin: 5px;
   background: #b2bec3;
   color: black;
+  font-size: 15px;
   padding: 10px 15px;
 }
-
 .switch-btn.active {
   background: #636e72;
   color: white;
 }
-
 .switch-btn:hover {
   background: #81ecec;
 }
 
-.full-width {
-  display: inline-block;
-  width: 200px;
+/* Upload file */
+input[type="file"] {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #dcdde1;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* Risultati analisi */
+h3 {
+  margin-top: 25px;
+  color: #2d3436;
+}
+
+p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+/* Pulsante PDF */
+button.primary:last-of-type {
+  background: #636e72;
+  margin-top: 15px;
+}
+button.primary:last-of-type:hover {
+  background: #b2bec3;
 }
