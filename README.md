@@ -29,6 +29,8 @@ This project is a **full-stack application** to analyze dependencies in Python a
   * Includes vulnerabilities, CVEs, severity, and recommendations
 * **Reset option** to start a new scan
 
+**Currently supports:** Python and Node.js. The architecture is modular, so additional languages and tools can be added easily in future updates.
+
 ---
 
 ## ✅ Tech Stack
@@ -134,7 +136,7 @@ Generates a PDF report and returns the file.
 
 ## ✅ Features in Progress
 
-* Java support (`pom.xml`, OWASP Dependency Check)
+* Adding support for additional languages and tools
 * CI/CD integration with GitHub Actions
 * Multi-file scan support
 
